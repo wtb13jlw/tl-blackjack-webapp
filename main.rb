@@ -71,10 +71,26 @@ post '/set_name' do
   if params[:player_name].length > 0
   	session[:player_name] = params[:player_name]
   	session[:player_wallet] = 500
-    redirect '/newgame'
+    erb :place_bet
   else
   	redirect '/set_name'
   end
+end
+
+get '/place_bet' do
+  erb :place_bet
+end
+
+post '/place_bet' do
+  if params[:bet_amt].length > 0
+    session[:bet_amt] = params[:bet_amt].to_i
+  else
+    session[:bet_amt] = 2
+  end
+  
+  session[:player_wallet] -= session[:bet_amt] 
+  redirect '/newgame'
+  
 end
 
 get '/newgame' do
@@ -109,10 +125,14 @@ post '/stay' do
   if session[:initial_turn]
     session[:initial_turn] = false
   else
-    if hv.between?(17,21) || hv > 21 
+    if hv > 16 
       redirect '/winner'
     else
       session[:dealer_hand] << session[:deck].pop
+      hv = calc_hand(session[:dealer_hand])
+      if hv > 16 
+        redirect '/winner'
+      end
     end
   end
 
@@ -127,23 +147,23 @@ get '/winner' do
   
   case
     when dhv == 21 && session[:dealer_hand].count == 2
-      @win = "The House Wins!"
-      @dblackjack = true
+      @error = "Frank has BlackJack!  You Lose!"
+      #@dblackjack = true
     when phv == 21 && session[:player_hand].count == 2
-      @win = "#{session[:player_name]} Wins!"
-      @pblackjack = true
+      @success = "#{session[:player_name]} Wins!"
+      #@pblackjack = true
     when dhv == phv
-      @win = "It's a Tie!"
+      @success = "It's a Tie!"
     when dhv > 21
-      @win = "#{session[:player_name]} Wins!"
-      @error = "The Dealer Busted!"
+      @success = "#{session[:player_name]} Wins!"
+      @error = "Frank Busted!"
     when phv > 21
-      @win = "The House Wins!"
-      @error = "You Busted!"
+      #@success = "The House Wins!"
+      @error = "Sorry, You Busted!  The House Wins!"
     when dhv > phv
-      @win = "The House Wins!"
+      @error = "Your Hand was lower than Frank's Hand.  The House Wins!"
     when dhv < phv
-      @win = "#{session[:player_name]} Wins!" 
+      @success = "#{session[:player_name]} Wins!" 
     
     #end
   end

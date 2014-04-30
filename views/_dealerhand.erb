@@ -1,0 +1,20 @@
+<div class="well">
+  <h4>Frank's cards are:</h4>
+  </br>
+
+  <% if @player_turn %>
+    <img src="/images/cards/cover.jpg">
+    <%= get_image(session[:dealer_hand][1]) %>
+  
+  <% else %>
+    <% session[:dealer_hand].each do |card| %>
+      <%= get_image(card) %> 
+    <% end %>
+  <% end %>
+
+  </br>
+  </br>
+  <% if @dealer_turn %>
+    The total value of the Frank's hand is: <%= calc_hand(session[:dealer_hand]) %>
+  <% end %> 
+</div>

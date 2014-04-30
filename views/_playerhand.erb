@@ -1,0 +1,14 @@
+<div class="well">
+
+  <h4><%= session[:player_name] %>'s cards are:</h4>
+  </br>
+
+  <% session[:player_hand].each do |card| %>
+    <%= get_image(card) %> 
+  <% end %>
+  
+  </br>
+  </br>
+  The total value of your hand is: <%= calc_hand(session[:player_hand]) %>
+
+</div>

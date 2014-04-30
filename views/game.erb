@@ -1,0 +1,28 @@
+<h4>Hello <%= session[:player_name] %>!</h4> 
+
+<%= easy_partial '_dealerhand' %>
+
+<div>
+  <% if @dealer_turn and not @stay %>
+    <form action='/stay' method='post'>
+      <input type='submit' value='Show next Dealer card!' class='btn'/>
+    </form>
+  </br>
+  </br>
+  <% end %>
+ 
+</div>
+
+<%= easy_partial '_playerhand' %>
+
+<% if @player_turn %>
+  <div>
+    <form class="display" action='/hit' method='post'>
+      <input type='submit' value='Hit!' class='btn'/>
+    </form>
+
+    <form class="display" action='/stay' method='post'>
+      <input type='submit' value='Stay!' class='btn'/>
+    </form>
+  </div>
+<% end %>

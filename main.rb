@@ -120,6 +120,11 @@ post '/hit' do
 end
 
 post '/stay' do
+  phv = calc_hand(session[:player_hand])
+  if phv == 21 && session[:player_hand].count == 2
+    redirect '/winner'
+  end
+
   @dealer_turn = true
   hv = calc_hand(session[:dealer_hand])
   if session[:initial_turn]
@@ -142,30 +147,33 @@ end
 get '/winner' do
   phv = calc_hand(session[:player_hand])
   dhv = calc_hand(session[:dealer_hand])
-  @dbust = false
-  @pbust = false
-  
+  @dealer_turn = true
+    
   case
     when dhv == 21 && session[:dealer_hand].count == 2
-      @error = "Frank has BlackJack!  You Lose!"
-      #@dblackjack = true
+      unless phv == 21 && session[:player_hand].count == 2
+        @error = "Frank has BlackJack!  You Lose!"
+      else
+        @success = "It's a Push!"
+      end
     when phv == 21 && session[:player_hand].count == 2
-      @success = "#{session[:player_name]} Wins!"
-      #@pblackjack = true
+      unless dhv == 21 && session[:dealer_hand].count == 2
+        @success = "#{session[:player_name]} has BlackJack!  #{session[:player_name]} Wins!"
+      else
+        @success = "It's a Push!"
+      end
     when dhv == phv
-      @success = "It's a Tie!"
+      @success = "It's a Push!"
     when dhv > 21
       @success = "#{session[:player_name]} Wins!"
       @error = "Frank Busted!"
     when phv > 21
-      #@success = "The House Wins!"
       @error = "Sorry, You Busted!  The House Wins!"
     when dhv > phv
       @error = "Your Hand was lower than Frank's Hand.  The House Wins!"
     when dhv < phv
-      @success = "#{session[:player_name]} Wins!" 
+      @success = "#{session[:player_name]}'s Hand beat Frank's Hand. #{session[:player_name]} Wins!" 
     
-    #end
   end
   
   erb :end_game

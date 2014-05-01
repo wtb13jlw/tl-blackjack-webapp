@@ -42,7 +42,7 @@ end
 before do
   @player_turn = false
   @dealer_turn = false
-  @stay = false
+  #@stay = false
 
 end
 
@@ -82,15 +82,23 @@ get '/place_bet' do
 end
 
 post '/place_bet' do
-  if params[:bet_amt].length > 0
-    session[:bet_amt] = params[:bet_amt].to_i
+  if  session[:player_wallet] < 2
+    redirect '/game_over'
+  end
+
+  if params[:cur_bet].length > 0
+    session[:cur_bet] = params[:cur_bet].to_i
   else
-    session[:bet_amt] = 2
+    session[:cur_bet] = 2
   end
   
-  session[:player_wallet] -= session[:bet_amt] 
-  redirect '/newgame'
-  
+  if session[:cur_bet] > session[:player_wallet]
+    puts "I got here!"
+    @error = "You do not have that much to bet!  Try a lower amount."
+    erb :place_bet
+  else
+    redirect '/newgame'
+  end
 end
 
 get '/newgame' do
@@ -153,12 +161,14 @@ get '/winner' do
     when dhv == 21 && session[:dealer_hand].count == 2
       unless phv == 21 && session[:player_hand].count == 2
         @error = "Frank has BlackJack!  You Lose!"
+        session[:player_wallet] -= session[:cur_bet]
       else
         @success = "It's a Push!"
       end
     when phv == 21 && session[:player_hand].count == 2
       unless dhv == 21 && session[:dealer_hand].count == 2
         @success = "#{session[:player_name]} has BlackJack!  #{session[:player_name]} Wins!"
+        session[:player_wallet] += (session[:cur_bet] * 1.5)
       else
         @success = "It's a Push!"
       end
@@ -167,15 +177,24 @@ get '/winner' do
     when dhv > 21
       @success = "#{session[:player_name]} Wins!"
       @error = "Frank Busted!"
+      session[:player_wallet] += session[:cur_bet]
     when phv > 21
       @error = "Sorry, You Busted!  The House Wins!"
+      session[:player_wallet] -= session[:cur_bet]
     when dhv > phv
       @error = "Your Hand was lower than Frank's Hand.  The House Wins!"
+      session[:player_wallet] -= session[:cur_bet]
     when dhv < phv
       @success = "#{session[:player_name]}'s Hand beat Frank's Hand. #{session[:player_name]} Wins!" 
+      session[:player_wallet] += session[:cur_bet]
     
   end
+  session[:cur_bet] = 0
   
   erb :end_game
 
+end
+
+get '/game_over' do 
+  erb :game_over
 end

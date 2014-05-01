@@ -1,0 +1,10 @@
+<img src="/images/sinatra.jpg">
+<br/>
+<h3>Place your bet, <%= session[:player_name] %>!</h3>
+<h5>Minimum bet is $2</h5>
+<form class="form-inline" action='/place_bet' method='post'>
+  <input type='text' name='cur_bet' placeholder='$2'/>
+  <input type='submit' value='Place Bet!' class='btn'/>
+</form>
+</br>
+<h4>You have $<%= session[:player_wallet] %> left in your wallet!</h4>

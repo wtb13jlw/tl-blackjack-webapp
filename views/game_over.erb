@@ -1,0 +1,11 @@
+<img src="/images/sinatra.jpg">
+</br>
+<p><h4>Looks like you are broke.
+  Thanks for coming to play with me</br>
+  <%= session[:player_name] %>!
+  Come back again when you get back on your feet.</h4></p>
+</br>
+
+<form class="form-inline" action='/reset' method='get'>
+  <input type='submit' value='Start Over' class='btn'/>
+</form>

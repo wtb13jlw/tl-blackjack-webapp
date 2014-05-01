@@ -26,9 +26,9 @@ helpers do
   end
 
   def get_image(card)
-  	card_face = (card[0].to_s).downcase
-  	suit = card[1]
-  	src = "/images/cards/#{suit}_#{card_face}.jpg"
+    card_face = (card[0].to_s).downcase
+    suit = card[1]
+    src = "/images/cards/#{suit}_#{card_face}.jpg"
     img = '<img src="' + src + '">'
     
   end
@@ -47,11 +47,11 @@ before do
 end
 
 get '/' do
-	if session.include? :player_name
-		redirect '/newgame'
-	else
-	  redirect '/intro'
-	end
+  if session.include? :player_name
+    redirect '/newgame'
+  else
+    redirect '/intro'
+  end
 end
 
 get '/reset' do
@@ -69,11 +69,11 @@ end
 
 post '/set_name' do
   if params[:player_name].length > 0
-  	session[:player_name] = params[:player_name]
-  	session[:player_wallet] = 500
+    session[:player_name] = params[:player_name]
+    session[:player_wallet] = 500
     erb :place_bet
   else
-  	redirect '/set_name'
+    redirect '/set_name'
   end
 end
 
@@ -94,8 +94,8 @@ post '/place_bet' do
 end
 
 get '/newgame' do
-	session[:deck] = CARDS.product(SUITS)
-	session[:deck].shuffle!
+  session[:deck] = CARDS.product(SUITS)
+  session[:deck].shuffle!
 
   session[:player_hand] = []
   session[:dealer_hand] = []

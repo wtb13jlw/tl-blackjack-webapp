@@ -1,4 +1,4 @@
-<img src="/images/sinatra.jpg">
+<!-- img src="/images/sinatra.jpg" -->
 <br/>
 <h3>Place your bet, <%= session[:player_name] %>!</h3>
 <h5>Minimum bet is $2</h5>
@@ -7,4 +7,4 @@
   <input type='submit' value='Place Bet!' class='btn'/>
 </form>
 </br>
-<h4>You have $<%= session[:player_wallet] %> left in your wallet!</h4>
+<h4>You have <%= format("$%.2f",session[:player_wallet]) %> left in your wallet!</h4>

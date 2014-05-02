@@ -42,8 +42,7 @@ end
 before do
   @player_turn = false
   @dealer_turn = false
-  #@stay = false
-
+  
 end
 
 get '/' do
@@ -68,13 +67,15 @@ get '/set_name' do
 end
 
 post '/set_name' do
-  if params[:player_name].length > 0
-    session[:player_name] = params[:player_name]
-    session[:player_wallet] = 500
-    erb :place_bet
+  if session.include? :player_name
+  elsif params[:player_name].length > 0
+    session[:player_name] = params[:player_name].capitalize
+    
   else
     redirect '/set_name'
   end
+  session[:player_wallet] = 500
+  erb :place_bet
 end
 
 get '/place_bet' do
@@ -195,6 +196,7 @@ get '/winner' do
 
 end
 
-get '/game_over' do 
+get '/game_over' do
+  @pname = session[:player_name] 
   erb :game_over
 end

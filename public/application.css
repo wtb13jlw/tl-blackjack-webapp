@@ -1,3 +1,7 @@
 form {
 	display: inline;
 }
+
+img.card_image {
+	margin-right: 10px;
+}

@@ -28,10 +28,22 @@ helpers do
   def get_image(card)
     card_face = (card[0].to_s).downcase
     suit = card[1]
-    src = "/images/cards/#{suit}_#{card_face}.jpg"
-    img = '<img src="' + src + '">'
-    
+    img = "<img src='/images/cards/#{suit}_#{card_face}.jpg' class='card_image'>"
+
   end
+
+  def set_buttons
+    @hit_button = "<input type='submit' value='Hit' class='btn btn-primary'/>"
+    @stay_button = "<input type='submit' value='Stay' class='btn btn-info'/>"
+    if calc_hand(session[:player_hand]).between?(3,11)
+      @hit_button = "<input type='submit' value='Hit' class='btn btn-success'/>"
+      @stay_button = "<input type='submit' value='Stay' class='btn btn-warning'/>"
+    elsif calc_hand(session[:player_hand]) > 16 
+      @hit_button = "<input type='submit' value='Hit' class='btn btn-warning'/>"
+      @stay_button = "<input type='submit' value='Stay' class='btn btn-success'/>"
+    end 
+  end
+
 
   def easy_partial template
     erb template.to_sym, :layout => false
@@ -42,6 +54,7 @@ end
 before do
   @player_turn = false
   @dealer_turn = false
+  @stay = false
   
 end
 
@@ -115,6 +128,8 @@ get '/newgame' do
   end
   @player_turn = true
   session[:initial_turn] = true
+  set_buttons
+
   erb :game
 end
 
@@ -122,6 +137,7 @@ post '/hit' do
   session[:player_hand] << session[:deck].pop
   if calc_hand(session[:player_hand]) < 22
     @player_turn = true
+    set_buttons
   else
     redirect '/winner'
   end

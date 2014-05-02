@@ -3,7 +3,7 @@
 <div>
   <% if @dealer_turn and not @stay %>
     <form action='/stay' method='post'>
-      <input type='submit' value='Show next Dealer card!' class='btn'/>
+      <input type='submit' value='Show next Dealer card' class='btn btn-primary'/>
     </form>
   </br>
   </br>
@@ -20,11 +20,13 @@
 <% if @player_turn %>
   <div>
     <form class="display" action='/hit' method='post'>
-      <input type='submit' value='Hit!' class='btn'/>
+      <%= @hit_button %>
+      <!-- input type='submit' value='Hit!' class='btn btn-warning'/ -->
     </form>
 
     <form class="display" action='/stay' method='post'>
-      <input type='submit' value='Stay!' class='btn'/>
+      <%= @stay_button %>
+      <!-- input type='submit' value='Stay!' class='btn btn-success'/ -->
     </form>
   </div>
 <% end %>

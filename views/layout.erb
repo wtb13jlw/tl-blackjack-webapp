@@ -10,10 +10,15 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-            <ul class="nav">
-              <li><a href="/place_bet">Play Again</a></li>
-              <li><a href="/reset">Change Player</a></li>
-            </ul>
+          <div>
+            <form class="display" action='/place_bet' method='get'>
+              <input type='submit' value='Play Again' class='btn btn-primary'/>
+            </form>
+
+            <form class="display" action='/reset' method='get'>
+              <input type='submit' value='Change Player' class='btn btn-danger'/>
+            </form>
+          </div>
         </div>
       </div>
     </div>

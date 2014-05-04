@@ -1,14 +1,16 @@
-<div class="well well-sm">
-
+<div id="player">
   <h4><%= session[:player_name] %>'s cards are:</h4>
-  </br>
 
-  <% session[:player_hand].each do |card| %>
-    <%= get_image(card) %> 
-  <% end %>
+  <div class="well well-sm">
+    <% session[:player_hand].each do |card| %>
+      <%= get_image(card) %> 
+    <% end %>
   
-  </br>
-  </br>
-  The total value of your hand is: <%= calc_hand(session[:player_hand]) %>
+  </div>
 
+  <% if session[:cur_bet] > 0 %>
+    <h4>Your bet for this hand is $<%= session[:cur_bet] %>.</h4>
+  <% end %>
+  <h4>You have <%= format("$%.2f",session[:player_wallet]) %> in the pot.</h4>
+  <h4>The total value of your hand is: <%= calc_hand(session[:player_hand]) %></h4>
 </div>

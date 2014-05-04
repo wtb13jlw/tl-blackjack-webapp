@@ -11,20 +11,16 @@
  
 </div>
 
-<div>
-  Your bet for this hand is $<%= session[:cur_bet] %>
-</div>
-
 <%= easy_partial '_playerhand' %>
 
 <% if @player_turn %>
   <div>
-    <form class="display" action='/hit' method='post'>
+    <form id="hit_form" class="display" action='/hit' method='post'>
       <%= @hit_button %>
       <!-- input type='submit' value='Hit!' class='btn btn-warning'/ -->
     </form>
 
-    <form class="display" action='/stay' method='post'>
+    <form id="stay_form" class="display" action='/stay' method='post'>
       <%= @stay_button %>
       <!-- input type='submit' value='Stay!' class='btn btn-success'/ -->
     </form>

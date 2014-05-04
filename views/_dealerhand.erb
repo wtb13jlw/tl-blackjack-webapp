@@ -1,6 +1,6 @@
+<h4>Frank's cards are:</h4>
+
 <div class="well">
-  <h4>Frank's cards are:</h4>
-  </br>
 
   <% if @player_turn %>
     <img src="/images/cards/cover.jpg" class="card_image">
@@ -11,10 +11,9 @@
       <%= get_image(card) %> 
     <% end %>
   <% end %>
-
-  </br>
-  </br>
-  <% if @dealer_turn %>
-    The total value of the Frank's hand is: <%= calc_hand(session[:dealer_hand]) %>
-  <% end %> 
+ 
 </div>
+
+<% if @dealer_turn %>
+  <h4>The total value of the Frank's hand is: <%= calc_hand(session[:dealer_hand]) %></h4>
+<% end %>

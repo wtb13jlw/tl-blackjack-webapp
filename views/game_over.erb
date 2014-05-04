@@ -1,11 +1,22 @@
-<!-- img src="/images/sinatra.jpg" -->
+<img src="/images/sinatra.jpg" >
 </br>
-<p><h4>Looks like you are broke.
-  Thanks for coming to play with me</br>
-  <%= session[:player_name] %>!
-  Come back again when you get back on your feet.</h4></p>
+<% if session[:player_wallet] < 2 %>
+  <p><h4>It looks like you are broke.
+    Thanks for coming to play with me</br>
+    <%= session[:player_name] %>!
+    Come back again when you get back on your feet.</h4></p>
+<% else %>
+  <p><h4>Sorry to see you leave, <%= session[:player_name] %>.
+  	You still have <%= format("$%.2f",session[:player_wallet]) %> left to play with.</h4>
+  	<h4>Thanks for coming to play with me today!
+    Come back again anytime.</h4></p>
+<% end %>
 </br>
 
 <form class="form-inline" action='/set_name' method='post'>
-  <input type='submit' value='Start Over' class='btn'/>
+  <input type='submit' value='Start Over' class='btn btn-primary'/>
+</form>
+
+<form class="form-inline" action='/place_bet' method='get'>
+  <input type='submit' value='Continue Playing' class='btn btn-success'/>
 </form>

@@ -141,7 +141,7 @@ post '/hit' do
   else
     redirect '/winner'
   end
-  erb :game
+  erb :game # , layout: false
 end
 
 post '/stay' do
@@ -208,7 +208,7 @@ get '/winner' do
   end
   session[:cur_bet] = 0
   
-  erb :end_game
+  erb :winner
 
 end
 

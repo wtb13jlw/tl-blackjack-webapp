@@ -2,6 +2,10 @@ form {
 	display: inline;
 }
 
+.well {
+   background-color: #668866;
+}
+
 img.card_image {
 	margin-right: 10px;
 }

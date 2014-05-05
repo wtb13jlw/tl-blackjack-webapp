@@ -1,28 +1,19 @@
-<%= easy_partial '_dealerhand' %>
-
-<div>
-  <% if @dealer_turn and not @stay %>
-    <form action='/stay' method='post'>
-      <input type='submit' value='Show next Dealer card' class='btn btn-primary'/>
-    </form>
-  </br>
-  </br>
-  <% end %>
- 
-</div>
-
-<%= easy_partial '_playerhand' %>
-
-<% if @player_turn %>
-  <div>
-    <form id="hit_form" class="display" action='/hit' method='post'>
-      <%= @hit_button %>
-      <!-- input type='submit' value='Hit!' class='btn btn-warning'/ -->
-    </form>
-
-    <form id="stay_form" class="display" action='/stay' method='post'>
-      <%= @stay_button %>
-      <!-- input type='submit' value='Stay!' class='btn btn-success'/ -->
-    </form>
+<div id="game">
+  
+  <div class="container">
+    <%if @lose_msg %>
+      <div class="alert alert-error"><%=@lose_msg%></div>
+    <% end %>
+    <%if @win_msg %>
+      <div class="alert alert-success"><%=@win_msg%></div>
+    <% end %>
+    <%if @tie_msg %>
+      <div class="alert alert-warning"><%=@tie_msg%></div>
+    <% end %>
   </div>
-<% end %>
+
+  <%= easy_partial '_dealerhand' %>
+
+  <%= easy_partial '_playerhand' %>
+
+</div>

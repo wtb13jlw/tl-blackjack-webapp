@@ -44,6 +44,10 @@ helpers do
     end 
   end
 
+  def tie_game
+    @tie_msg = "It's a Push!"
+    session[:player_wallet] += session[:cur_bet]
+  end
 
   def easy_partial template
     erb template.to_sym, :layout => false
@@ -92,7 +96,11 @@ post '/set_name' do
 end
 
 get '/place_bet' do
-  erb :place_bet
+  if session.include? :player_name
+    erb :place_bet
+  else
+    redirect '/intro'
+  end
 end
 
 post '/place_bet' do
@@ -107,10 +115,10 @@ post '/place_bet' do
   end
   
   if session[:cur_bet] > session[:player_wallet]
-    puts "I got here!"
     @error = "You do not have that much to bet!  Try a lower amount."
     erb :place_bet
   else
+    session[:player_wallet] -= session[:cur_bet]
     redirect '/newgame'
   end
 end
@@ -141,7 +149,7 @@ post '/hit' do
   else
     redirect '/winner'
   end
-  erb :game # , layout: false
+  erb :game, layout: false
 end
 
 post '/stay' do
@@ -166,53 +174,61 @@ post '/stay' do
     end
   end
 
-  erb :game
+  erb :game, layout: false
 end
 
 get '/winner' do
   phv = calc_hand(session[:player_hand])
   dhv = calc_hand(session[:dealer_hand])
   @dealer_turn = true
+  @stay = true
+  @lose_msg = false
+  @win_msg = false
+  @tie_msg = false
     
   case
     when dhv == 21 && session[:dealer_hand].count == 2
       unless phv == 21 && session[:player_hand].count == 2
-        @error = "Frank has BlackJack!  You Lose!"
+        @lose_msg = "Frank has BlackJack!  You Lose!"
         session[:player_wallet] -= session[:cur_bet]
       else
-        @success = "It's a Push!"
+        tie_game
+        #@tie_msg = "It's a Push!"
       end
     when phv == 21 && session[:player_hand].count == 2
       unless dhv == 21 && session[:dealer_hand].count == 2
-        @success = "#{session[:player_name]} has BlackJack!  #{session[:player_name]} Wins!"
-        session[:player_wallet] += (session[:cur_bet] * 1.5)
+        @win_msg = "#{session[:player_name]} has BlackJack!  #{session[:player_name]} Wins!"
+        session[:player_wallet] += (session[:cur_bet] * 2.5)
       else
-        @success = "It's a Push!"
+        tie_game
+        #@tie_msg = "It's a Push!"
       end
     when dhv == phv
-      @success = "It's a Push!"
+      tie_game
+      #@tie_msg = "It's a Push!"
     when dhv > 21
-      @success = "#{session[:player_name]} Wins!"
-      @error = "Frank Busted!"
-      session[:player_wallet] += session[:cur_bet]
+      @win_msg = "Frank Busted!  #{session[:player_name]} Wins!"
+      session[:player_wallet] += (session[:cur_bet] * 2)
     when phv > 21
-      @error = "Sorry, You Busted!  The House Wins!"
-      session[:player_wallet] -= session[:cur_bet]
+      @lose_msg = "Sorry, You Busted!  The House Wins!"
     when dhv > phv
-      @error = "Your Hand was lower than Frank's Hand.  The House Wins!"
-      session[:player_wallet] -= session[:cur_bet]
+      @lose_msg = "Your Hand was lower than Frank's Hand.  The House Wins!"
     when dhv < phv
-      @success = "#{session[:player_name]}'s Hand beat Frank's Hand. #{session[:player_name]} Wins!" 
-      session[:player_wallet] += session[:cur_bet]
+      @win_msg = "#{session[:player_name]}'s Hand beat Frank's Hand. #{session[:player_name]} Wins!" 
+      session[:player_wallet] += (session[:cur_bet] * 2)
     
   end
   session[:cur_bet] = 0
   
-  erb :winner
+  erb :game, layout: false
 
 end
 
 get '/game_over' do
-  @pname = session[:player_name] 
-  erb :game_over
+  if session.include? :player_name
+    @pname = session[:player_name] 
+    erb :game_over
+  else
+    erb :no_game
+  end
 end

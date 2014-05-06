@@ -92,14 +92,18 @@ post '/set_name' do
     redirect '/set_name'
   end
   session[:player_wallet] = 500
-  erb :place_bet
+  redirect 'place_bet'
 end
 
 get '/place_bet' do
-  if session.include? :player_name
-    erb :place_bet
-  else
+  unless session.include? :player_name
     redirect '/intro'
+  else
+    if session[:player_wallet] > 2
+      erb :place_bet
+    else
+      redirect 'game_over'
+    end
   end
 end
 
@@ -193,7 +197,6 @@ get '/winner' do
         session[:player_wallet] -= session[:cur_bet]
       else
         tie_game
-        #@tie_msg = "It's a Push!"
       end
     when phv == 21 && session[:player_hand].count == 2
       unless dhv == 21 && session[:dealer_hand].count == 2
@@ -201,11 +204,9 @@ get '/winner' do
         session[:player_wallet] += (session[:cur_bet] * 2.5)
       else
         tie_game
-        #@tie_msg = "It's a Push!"
       end
     when dhv == phv
       tie_game
-      #@tie_msg = "It's a Push!"
     when dhv > 21
       @win_msg = "Frank Busted!  #{session[:player_name]} Wins!"
       session[:player_wallet] += (session[:cur_bet] * 2)

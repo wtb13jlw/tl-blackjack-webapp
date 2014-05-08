@@ -44,8 +44,12 @@ helpers do
     end 
   end
 
-  def tie_game
-    @tie_msg = "It's a Push!"
+  def tie_game(blackjack=false)
+    if blackjack
+      @tie_msg = "Both #{session[:player_name]} and Frank have BlackJack!  It's a Push!"
+    else
+      @tie_msg = "It's a Push!"
+    end
     session[:player_wallet] += session[:cur_bet]
   end
 
@@ -99,7 +103,7 @@ get '/place_bet' do
   unless session.include? :player_name
     redirect '/intro'
   else
-    if session[:player_wallet] > 2
+    if session[:player_wallet] >= 2
       erb :place_bet
     else
       redirect 'game_over'
@@ -142,6 +146,13 @@ get '/newgame' do
   session[:initial_turn] = true
   set_buttons
 
+  #session[:dealer_hand] = [['Ace', 'diamonds'], ['queen', 'hearts']]
+  #session[:player_hand] = [['Ace', 'spades'], ['jack', 'spades']]
+
+  if calc_hand(session[:player_hand]) == 21
+    redirect '/winner'
+  end
+
   erb :game
 end
 
@@ -157,8 +168,7 @@ post '/hit' do
 end
 
 post '/stay' do
-  phv = calc_hand(session[:player_hand])
-  if phv == 21 && session[:player_hand].count == 2
+  if calc_hand(session[:dealer_hand]) == 21 && session[:dealer_hand].count == 2
     redirect '/winner'
   end
 
@@ -196,7 +206,7 @@ get '/winner' do
         @lose_msg = "Frank has BlackJack!  You Lose!"
         session[:player_wallet] -= session[:cur_bet]
       else
-        tie_game
+        tie_game(blackjack=true)
       end
     when phv == 21 && session[:player_hand].count == 2
       unless dhv == 21 && session[:dealer_hand].count == 2
@@ -213,7 +223,7 @@ get '/winner' do
     when phv > 21
       @lose_msg = "Sorry, You Busted!  The House Wins!"
     when dhv > phv
-      @lose_msg = "Your Hand was lower than Frank's Hand.  The House Wins!"
+      @lose_msg = "Frank stays.  Your Hand was lower than Frank's Hand.  The House Wins!"
     when dhv < phv
       @win_msg = "#{session[:player_name]}'s Hand beat Frank's Hand. #{session[:player_name]} Wins!" 
       session[:player_wallet] += (session[:cur_bet] * 2)
@@ -221,7 +231,7 @@ get '/winner' do
   end
   session[:cur_bet] = 0
   
-  erb :game, layout: false
+  erb :winner
 
 end
 

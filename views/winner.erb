@@ -1,17 +1,15 @@
-<% if @dblackjack %>
-  <div>
-    The Dealer has BlackJack!
-    </br>
-    </br>
-  </div>
-<% end %>
+<div class="container">
+    <%if @lose_msg %>
+      <div class="alert alert-error"><%=@lose_msg%></div>
+    <% end %>
+    <%if @win_msg %>
+      <div class="alert alert-success"><%=@win_msg%></div>
+    <% end %>
+    <%if @tie_msg %>
+      <div class="alert alert-warning"><%=@tie_msg%></div>
+    <% end %>
+</div>
 
 <%= easy_partial '_dealerhand' %>
 
 <%= easy_partial '_playerhand' %>
-
-<% if @pblackjack %>
-  <div>
-    You have BlackJack!
-  </div>
-<% end %>
